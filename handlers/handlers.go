@@ -16,7 +16,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 	var r models.RestApi
 	r.Status = 400
 
-	isOk, statusCode, msg, claim := validoAuthorization(ctx, request)
+	isOk, statusCode, msg, _ := validoAuthorization(ctx, request)
 	if !isOk {
 		r.Status = statusCode
 		r.Message = msg
@@ -61,7 +61,7 @@ func validoAuthorization(ctx context.Context, request events.APIGatewayProxyRequ
 		return false, 401, "Token requerido", models.Claim{}
 	}
 
-	claim, todoOK, msg, err := jwt.ProcesoToken(tk, ctx.Value(models.Key("jwtSign")).(string))
+	claim, todoOK, msg, err := jwt.ProcesoToken(token, ctx.Value(models.Key("jwtSign")).(string))
 	if !todoOK {
 		if err != nil {
 			return false, 401, err.Error(), models.Claim{}
